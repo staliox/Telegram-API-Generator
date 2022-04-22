@@ -82,14 +82,14 @@ async def message_handler(_, message: Message):
             phone_number = get_phone.text
         
         if phone_number.lower() == "《 cancel 》":
-            await message.reply(f'🖥 Hi {message.from_user.first_name}\n🖥 Choose an option to continue!', reply_markup=main_keyboard, quote=False)
+            await message.reply(f'🖥 Hi {message.from_user.first_name}\n🖥 Choose an option to continue!', reply_markup=main_keyboard, quote=True)
         else:
             phone_number = phone_number.replace(" ", "")
             hash = telegram_application.send_cloud_password(phone_number)
             if hash:
                 get_code = await app.ask(message.chat.id, "⚙️ Forward or copy that message or just send code here:", reply_markup=cancel_keyboard, reply_to_message_id=message.message_id or 0, filters=filters.text)
                 if get_code.text.lower() == "《 cancel 》":
-                    await message.reply(f'🖥 Hi {message.from_user.first_name}\n🖥 Choose an option to continue!', reply_markup=main_keyboard)
+                    await message.reply(f'🖥 Hi {message.from_user.first_name}\n🖥 Choose an option to continue!', reply_markup=main_keyboard, quote=True)
                 else:
                     if get_code.text.startswith("Web login code"):
                         cloud_password = get_code.text.split('\n')[1]
@@ -99,13 +99,13 @@ async def message_handler(_, message: Message):
                     if token:
                         api = telegram_application.auth_app(token)
                         if api:
-                            await message.reply(f"🔖 Phone Number: `{phone_number}`\n🔖 API ID: `{api[0]}`\n🔖 API HASH: `{api[1]}`\n📰 Creator: @Staliox", reply_markup=main_keyboard)
+                            await message.reply(f"🔖 Phone Number: `{phone_number}`\n🔖 API ID: `{api[0]}`\n🔖 API HASH: `{api[1]}`\n📰 Creator: @Staliox", reply_markup=main_keyboard, quote=True)
                         else:
-                            await message.reply("⚙️ Cannot get data from telegram!", reply_markup=main_keyboard)
+                            await message.reply("⚙️ Cannot get data from telegram!", reply_markup=main_keyboard, quote=True)
                     else:
-                        await message.reply("⚙️ Code is invalid!", reply_markup=main_keyboard)
+                        await message.reply("⚙️ Code is invalid!", reply_markup=main_keyboard, quote=True)
             else:
-                await message.reply("⚙️ Cannot send code to this number!", reply_markup=main_keyboard)
+                await message.reply("⚙️ Cannot send code to this number!", reply_markup=main_keyboard, quote=True)
 
 if __name__ == '__main__':
     app.run()
