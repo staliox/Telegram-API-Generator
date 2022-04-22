@@ -4,13 +4,12 @@ BOT_TOKEN = "0000000:XXXXXXXXXXXXXXXXXXXXXXXXX"
 
 import json, requests
 from lxml import html
-from typing import Union
 from pyrogram import Client, filters
 from pyrogram.types import Message, ReplyKeyboardMarkup
 from pyromod import listen
 
 class TelegramApplication:
-    def send_cloud_password(self, phone) -> Union[str, bool]:
+    def send_cloud_password(self, phone):
         try:
             response = requests.post("https://my.telegram.org/auth/send_password", data=f"phone={phone}", headers={"Origin":"https://my.telegram.org","Accept-Encoding": "gzip, deflate, br","Accept-Language": "it-IT,it;q=0.8,en-US;q=0.6,en;q=0.4","User-Agent":"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36","Content-Type": "application/x-www-form-urlencoded; charset=UTF-8","Accept": "application/json, text/javascript, */*; q=0.01","Reffer": "https://my.telegram.org/auth","X-Requested-With": "XMLHttpRequest","Connection":"keep-alive","Dnt":"1",})
             get_json = json.loads(response.content)
@@ -18,14 +17,14 @@ class TelegramApplication:
         except:
             return False
 
-    def auth(self, phone, hash_code, cloud_password) -> Union[str, bool]:
+    def auth(self, phone, hash_code, cloud_password):
         responses = requests.post('https://my.telegram.org/auth/login', data=f"phone={phone}&random_hash={hash_code}&password={cloud_password}", headers= {"Origin":"https://my.telegram.org","Accept-Encoding": "gzip, deflate, br","Accept-Language": "it-IT,it;q=0.8,en-US;q=0.6,en;q=0.4","User-Agent":"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36","Content-Type": "application/x-www-form-urlencoded; charset=UTF-8","Accept": "application/json, text/javascript, */*; q=0.01","Reffer": "https://my.telegram.org/auth","X-Requested-With": "XMLHttpRequest","Connection":"keep-alive","Dnt":"1",})
         try:
             return responses.cookies['stel_token']
         except:
             return False
 
-    def auth_app(self, stel_token) -> Union[tuple, bool]:
+    def auth_app(self, stel_token):
         resp = requests.get('https://my.telegram.org/apps', headers={"Dnt":"1","Accept-Encoding": "gzip, deflate, br","Accept-Language": "it-IT,it;q=0.8,en-US;q=0.6,en;q=0.4","Upgrade-Insecure-Requests":"1","User-Agent":"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36","Reffer": "https://my.telegram.org/org","Cookie":f"stel_token={stel_token}" ,"Cache-Control": "max-age=0",})
         tree = html.fromstring(resp.content)
         api = tree.xpath('//span[@class="form-control input-xlarge uneditable-input"]//text()')
@@ -62,7 +61,7 @@ cancel_keyboard = ReplyKeyboardMarkup(
 )
 
 @app.on_message(filters.private & (filters.text | filters.contact))
-async def message_handler(_, message: Message) -> None:
+async def message_handler(_, message: Message):
     text = message.text or ""
     
     if text.lower() == "/start":
@@ -78,17 +77,19 @@ async def message_handler(_, message: Message) -> None:
         get_phone = await app.ask(message.chat.id, "⚙️ Send your phone number or share your phone number:", reply_markup=cancel_keyboard, reply_to_message_id=message.message_id or 0)
         
         if get_phone.text.lower() == "《 cancel 》":
-            await message.reply(f'🖥 Hi {message.from_user.first_name}\n🖥 Choose an option to continue!', reply_markup=main_keyboard, reply_to_message_id=message.message_id or 0)
+            await message.reply(f'🖥 Hi {message.from_user.first_name}\n🖥 Choose an option to continue!', reply_markup=main_keyboard, quote=False)
         else:
             if message.contact:
-                phone_number = message.contact.phone_number
+                phone_number = get_phone.contact.phone_number
             else:
-                phone_number = text
+                phone_number = get_phone.text
+            
+            phone_number = phone_number.replace(" ", "")
             
             hash = telegram_application.send_cloud_password(phone_number)
             if hash:
                 get_code = await app.ask(message.chat.id, "⚙️ Forward or copy that message or just send code here:", filters=filters.text)
-                if get_phone.text.lower() == "《 cancel 》":
+                if get_code.text.lower() == "《 cancel 》":
                     await message.reply(f'🖥 Hi {message.from_user.first_name}\n🖥 Choose an option to continue!', reply_markup=main_keyboard)
                 else:
                     if get_code.text.startswith("Web login code"):
