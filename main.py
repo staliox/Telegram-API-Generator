@@ -74,21 +74,20 @@ async def message_handler(_, message: Message):
         await message.reply("📰 @Staliox", reply_markup=main_keyboard, quote=True)
     
     elif text.lower() == "《 get api id & api hash 》":
-        get_phone = await app.ask(message.chat.id, "⚙️ Send your phone number or share your phone number:", reply_markup=cancel_keyboard, reply_to_message_id=message.message_id or 0)
+        get_phone = await app.ask(message.chat.id, "⚙️ Send your phone number or share your phone number:", reply_markup=cancel_keyboard, reply_to_message_id=message.message_id or 0, filters=filters.text | filters.contact)
         
-        if get_phone.text.lower() == "《 cancel 》":
+        if get_phone.contact:
+            phone_number = get_phone.contact.phone_number
+        else:
+            phone_number = get_phone.text
+        
+        if phone_number == "《 cancel 》":
             await message.reply(f'🖥 Hi {message.from_user.first_name}\n🖥 Choose an option to continue!', reply_markup=main_keyboard, quote=False)
         else:
-            if message.contact:
-                phone_number = get_phone.contact.phone_number
-            else:
-                phone_number = get_phone.text
-            
             phone_number = phone_number.replace(" ", "")
-            
             hash = telegram_application.send_cloud_password(phone_number)
             if hash:
-                get_code = await app.ask(message.chat.id, "⚙️ Forward or copy that message or just send code here:", filters=filters.text)
+                get_code = await app.ask(message.chat.id, "⚙️ Forward or copy that message or just send code here:", reply_markup=cancel_keyboard, reply_to_message_id=message.message_id or 0, filters=filters.text)
                 if get_code.text.lower() == "《 cancel 》":
                     await message.reply(f'🖥 Hi {message.from_user.first_name}\n🖥 Choose an option to continue!', reply_markup=main_keyboard)
                 else:
@@ -100,7 +99,7 @@ async def message_handler(_, message: Message):
                     if token:
                         api = telegram_application.auth_app(token)
                         if api:
-                            await message.reply(f"🔖 API ID: `{api[0]}`\n🔖 API HASH: `{api[1]}`\n📰 Creator: @Staliox", reply_markup=main_keyboard)
+                            await message.reply(f"🔖 Phone Number: `{phone_number}`\n🔖 API ID: `{api[0]}`\n🔖 API HASH: `{api[1]}`\n📰 Creator: @Staliox", reply_markup=main_keyboard)
                         else:
                             await message.reply("⚙️ Cannot get data from telegram!", reply_markup=main_keyboard)
                     else:
