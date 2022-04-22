@@ -81,7 +81,7 @@ async def message_handler(_, message: Message):
         else:
             phone_number = get_phone.text
         
-        if phone_number == "《 cancel 》":
+        if phone_number.lower() == "《 cancel 》":
             await message.reply(f'🖥 Hi {message.from_user.first_name}\n🖥 Choose an option to continue!', reply_markup=main_keyboard, quote=False)
         else:
             phone_number = phone_number.replace(" ", "")
