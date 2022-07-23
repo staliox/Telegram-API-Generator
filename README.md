@@ -1,18 +1,11 @@
-# Get-API-ID-API-HASH-Telegram
-An app for create or get api id and api hash from telegram
+# Telegram API Hash Generator
 
-Telegram API ID and API Hash Creator
+An app for create or get telegram api id and api
 
-1. Install Libraries
-```
-pip install requests
-pip install pyrogram
-pip install pyromod
-```
+## Installation
 
-2. Set Info
-```
-API_ID = 0000000
-API_HASH = "XXXXXXXXXXXXXXXXXXXXXXX"
-BOT_TOKEN = "0000000:XXXXXXXXXXXXXXXXXXXXXXXXX"
-```
+1-
+```pip3 install -U -r requirements.txt```
+
+2-
+Change ```config.py``` variables
