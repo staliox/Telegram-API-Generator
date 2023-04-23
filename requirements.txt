@@ -1,4 +1,2 @@
 lxml
-aiogram
 requests
-phonenumbers
