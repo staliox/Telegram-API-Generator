@@ -4,16 +4,19 @@ An app for create or get telegram api id and api
 
 ## Possibilities
   - Fast response to messages and communication with the Telegram
-  - Stylish and beautiful appearance
+  - Simple and Comprehensive
 
-## How To Use
-- ### Install
-    - Clone repository with `git clone https://github.com/staliox/Telegram-API-Generator.git`
-    - Install libraries with `pip3 install -U -r requirements.txt`
-    
-- ### Set Info
-    - Edit `config.py` and edit variables:
+## Example
     ``` python
-    BOT_TOKEN = "0123456789:abcdefghijklmnopqrstuvwxyz"
-    CHANNEL_USERNAME = "username"
+    from tgapi import TelegramApplication
+
+    app = TelegramApplication(PHONE_NUMBER)
+    send_password = app.send_password()
+
+    if send_password:
+        auth_login = app.auth_login(PASSWORD)
+
+        if auth_login:
+            auth_app = app.auth_app()
+            print(auth_app)
     ```
