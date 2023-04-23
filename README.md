@@ -7,16 +7,16 @@ An app for create or get telegram api id and api
   - Simple and Comprehensive
 
 ## Example
-    ``` python
-    from tgapi import TelegramApplication
+``` python
+from tgapi import TelegramApplication
 
-    app = TelegramApplication(PHONE_NUMBER)
-    send_password = app.send_password()
+app = TelegramApplication(PHONE_NUMBER)
+send_password = app.send_password()
 
-    if send_password:
-        auth_login = app.auth_login(PASSWORD)
-
-        if auth_login:
-            auth_app = app.auth_app()
-            print(auth_app)
-    ```
+if send_password:
+    auth_login = app.auth_login(PASSWORD)
+    
+    if auth_login:
+        auth_app = app.auth_app()
+        print(auth_app)
+```
